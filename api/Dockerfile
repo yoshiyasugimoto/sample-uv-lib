@@ -17,14 +17,17 @@ RUN pip install uv
 # Set work directory
 WORKDIR /app
 
-# Copy project files
-COPY pyproject.toml uv.lock* ./
+# Copy mylib dependency first
+COPY ./mylib/ ./mylib/
 
-# Copy application code (needed for workspace dependencies)
-COPY . .
+# Copy api project files
+COPY ./api/ .
 
-# Install dependencies using uv (after copying all files for workspace)
-RUN if [ -f uv.lock ]; then uv sync --frozen; else uv sync; fi
+# Update pyproject.toml to use correct mylib path in container
+RUN sed -i 's|path = "../mylib"|path = "./mylib"|' pyproject.toml
+
+# Install dependencies using uv (regenerate lock with new paths)
+RUN uv sync
 
 # Create non-root user
 RUN useradd --create-home --shell /bin/bash app && chown -R app:app /app
@@ -33,5 +36,8 @@ USER app
 # Expose port
 EXPOSE 8000
 
-# Run the application
-CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Add .venv/bin to PATH
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Run the application directly with python
+CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,13 +1,16 @@
 [project]
-name = "sample-uv-lib"
+name = "api"
 version = "0.1.0"
-description = "Sample UV library project"
+description = "FastAPI application for sample-uv-lib"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi",
     "uvicorn",
     "mylib",
 ]
+
+[tool.uv.sources]
+mylib = { path = "../mylib" }
 
 [project.optional-dependencies]
 dev = [
@@ -38,16 +41,8 @@ indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
 
-[tool.uv.workspace]
-members = [
-    "mylib",
-]
-
-[tool.uv.sources]
-mylib = { workspace = true }
-
 [tool.ruff.lint.isort]
-known-first-party = ["sample_uv_lib"]
+known-first-party = ["api", "mylib"]
 combine-as-imports = true
 force-wrap-aliases = true
 split-on-trailing-comma = true

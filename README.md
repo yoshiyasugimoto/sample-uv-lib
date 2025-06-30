@@ -13,11 +13,13 @@ A sample Python project demonstrating UV package manager integration with Docker
 ## Project Structure
 
 ```
-├── Dockerfile              # Docker container configuration
 ├── compose.yml             # Docker Compose configuration
-├── main.py                 # FastAPI application
-├── pyproject.toml          # Project configuration and dependencies
-├── uv.lock                 # Dependency lock file
+├── api/                    # FastAPI application package (main project)
+│   ├── __init__.py         # Package marker
+│   ├── main.py             # FastAPI application
+│   ├── pyproject.toml      # Main project configuration
+│   ├── uv.lock             # Dependency lock file
+│   └── Dockerfile          # Docker container configuration
 ├── mylib/                  # Local library package
 │   ├── src/mylib/
 │   │   ├── __init__.py     # Package exports
@@ -54,7 +56,12 @@ A sample Python project demonstrating UV package manager integration with Docker
    curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
 
-2. **Install dependencies:**
+2. **Navigate to the API directory:**
+   ```bash
+   cd api
+   ```
+
+3. **Install dependencies:**
    ```bash
    # Production dependencies only
    uv sync
@@ -63,7 +70,7 @@ A sample Python project demonstrating UV package manager integration with Docker
    uv sync --dev
    ```
 
-3. **Run the application:**
+4. **Run the application:**
    ```bash
    uv run uvicorn main:app --reload
    ```
@@ -102,6 +109,9 @@ The project uses **Ruff** for both linting and formatting.
 
 **Local Development:**
 ```bash
+# Navigate to api directory
+cd api
+
 # Install dev dependencies first
 uv sync --dev
 
@@ -112,16 +122,12 @@ uv run ruff check --fix
 uv run ruff format
 ```
 
-**Docker Container:**
-```bash
-# Development dependencies are not included in production container
-# For linting in Docker, rebuild with dev dependencies:
-docker run --rm -v $(pwd):/app -w /app python:3.13-slim sh -c "pip install uv && uv sync --dev && uv run ruff check ."
-```
-
 ### Adding Dependencies
 
 ```bash
+# Navigate to api directory first
+cd api
+
 # Add runtime dependency
 uv add package-name
 
@@ -132,6 +138,9 @@ uv add --dev package-name
 ### Testing
 
 ```bash
+# Navigate to api directory first
+cd api
+
 # Run tests (when implemented)
 uv run pytest
 ```
@@ -143,13 +152,14 @@ uv run pytest
 - `PYTHONDONTWRITEBYTECODE=1` - Prevent Python from writing pyc files
 - `PYTHONUNBUFFERED=1` - Force stdout and stderr to be unbuffered
 
-### UV Workspace
+### Project Management
 
-This project uses UV's workspace feature to manage the local `mylib` package:
+This project manages dependencies at the `api/` level:
 
-- Workspace members are defined in `pyproject.toml`
-- Local dependencies are specified in `tool.uv.sources`
-- Both packages are built and installed together
+- **api/**: Main FastAPI application with its own `pyproject.toml` and `uv.lock`
+- **mylib/**: Local utility library included as a path dependency
+- Dependencies are managed in `api/pyproject.toml`
+- All UV commands should be run from the `api/` directory
 
 ## Docker
 
@@ -159,7 +169,7 @@ None currently defined.
 
 ### Volumes
 
-- `./:/app` - Mount source code for development
+For production deployment, no volumes are mounted to ensure consistent runtime environment.
 
 ### Ports
 
@@ -167,10 +177,11 @@ None currently defined.
 
 ## Contributing
 
-1. Install development dependencies: `uv sync --dev`
-2. Make your changes
-3. Run code quality checks: `uv run ruff check --fix && uv run ruff format`
-4. Test your changes: `docker compose up --build`
+1. Navigate to api directory: `cd api`
+2. Install development dependencies: `uv sync --dev`
+3. Make your changes
+4. Run code quality checks: `uv run ruff check --fix && uv run ruff format`
+5. Test your changes: `docker compose up --build`
 
 ## License
 

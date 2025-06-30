@@ -1,10 +1,11 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
     ports:
       - "8000:8000"
-    volumes:
-      - .:/app
+    # Removed volumes for production deployment
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1

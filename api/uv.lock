@@ -2,12 +2,6 @@ version = 1
 revision = 2
 requires-python = ">=3.13"
 
-[manifest]
-members = [
-    "mylib",
-    "sample-uv-lib",
-]
-
 [[package]]
 name = "annotated-types"
 version = "0.7.0"
@@ -29,6 +23,32 @@ sdist = { url = "https://files.pythonhosted.org/packages/95/7d/4c1bd541d4dffa1b5
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a1/ee/48ca1a7c89ffec8b6a0c5d02b89c305671d5ffd8d3c94acf8b8c408575bb/anyio-4.9.0-py3-none-any.whl", hash = "sha256:9f76d541cad6e36af7beb62e978876f3b41e3e04f2c1fbf0884604c0a9c4d93c", size = 100916, upload-time = "2025-03-17T00:02:52.713Z" },
 ]
+
+[[package]]
+name = "api"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "fastapi" },
+    { name = "mylib" },
+    { name = "uvicorn" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "pytest" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fastapi" },
+    { name = "mylib", directory = "../mylib" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.4.0" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.8.0" },
+    { name = "uvicorn" },
+]
+provides-extras = ["dev"]
 
 [[package]]
 name = "click"
@@ -95,7 +115,7 @@ wheels = [
 [[package]]
 name = "mylib"
 version = "0.1.0"
-source = { editable = "mylib" }
+source = { directory = "../mylib" }
 
 [[package]]
 name = "packaging"
@@ -207,32 +227,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/cf/56/7158bd8d3cf16394928f47c637d39a7d532268cd45220bdb6cd622985760/ruff-0.12.1-py3-none-win_amd64.whl", hash = "sha256:9e1123b1c033f77bd2590e4c1fe7e8ea72ef990a85d2484351d408224d603013", size = 11547485, upload-time = "2025-06-26T20:34:11.008Z" },
     { url = "https://files.pythonhosted.org/packages/91/d0/6902c0d017259439d6fd2fd9393cea1cfe30169940118b007d5e0ea7e954/ruff-0.12.1-py3-none-win_arm64.whl", hash = "sha256:78ad09a022c64c13cc6077707f036bab0fac8cd7088772dcd1e5be21c5002efc", size = 10691209, upload-time = "2025-06-26T20:34:12.928Z" },
 ]
-
-[[package]]
-name = "sample-uv-lib"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "fastapi" },
-    { name = "mylib" },
-    { name = "uvicorn" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "pytest" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fastapi" },
-    { name = "mylib", editable = "mylib" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.4.0" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.8.0" },
-    { name = "uvicorn" },
-]
-provides-extras = ["dev"]
 
 [[package]]
 name = "sniffio"
